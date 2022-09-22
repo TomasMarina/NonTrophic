@@ -7,7 +7,7 @@
 
 # Load pkgs ----
 
-packages <- c("igraph", "tidyr", "multiweb", "NetIndices", "intergraph")
+packages <- c("igraph", "dplyr", "tidyr", "multiweb", "NetIndices", "intergraph")
 ipak <- function(pkg){
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
   if (length(new.pkg))
