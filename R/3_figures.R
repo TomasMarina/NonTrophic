@@ -1,0 +1,70 @@
+## Ecological networks of an Antarctic ecosystem: a full description of non-trophic interactions
+## Date: September 2022
+## Authors: Vanesa Salinas, Tomás Ignacio Marina, Georgina Cordone, Fernando Momo
+
+# 1. FIGURES
+
+
+# Load pkgs ----
+
+packages <- c("dplyr", "tidyr", "ggplot2")
+ipak <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg))
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
+ipak(packages)
+
+
+# Load data ----
+
+load("data/igraph_multiplex_data.rda")
+load("results/complexity_&_sppattr.rda")
+
+
+# Figure 5 ----
+# Caption: Distribution of non-trophic interactions among basal, intermediate and top species.
+
+sp_attr_all
+
+troph_list <- sp_attr_all %>% 
+  dplyr::select(TrophicSpecies, Degree.troph, TrophicLevel, Type) %>% 
+  slice(rep(seq_len(n()), Degree.troph)) %>% 
+  dplyr::select(-Degree.troph) %>% 
+  mutate(Interaction = "trophic")
+mut_list <- sp_attr_all %>% 
+  dplyr::select(TrophicSpecies, Degree.mut, TrophicLevel, Type) %>% 
+  slice(rep(seq_len(n()), Degree.mut)) %>% 
+  dplyr::select(-Degree.mut) %>% 
+  mutate(Interaction = "mutualistic")
+comp_list <- sp_attr_all %>% 
+  dplyr::select(TrophicSpecies, Degree.comp, TrophicLevel, Type) %>% 
+  slice(rep(seq_len(n()), Degree.comp)) %>% 
+  dplyr::select(-Degree.comp) %>% 
+  mutate(Interaction = "competitive")
+com_list <- sp_attr_all %>% 
+  dplyr::select(TrophicSpecies, Degree.com, TrophicLevel, Type) %>% 
+  slice(rep(seq_len(n()), Degree.com)) %>% 
+  dplyr::select(-Degree.com) %>% 
+  mutate(Interaction = "commensalistic")
+am_list <- sp_attr_all %>% 
+  dplyr::select(TrophicSpecies, Degree.am, TrophicLevel, Type) %>% 
+  slice(rep(seq_len(n()), Degree.am)) %>% 
+  dplyr::select(-Degree.am) %>% 
+  mutate(Interaction = "amensalistic")
+
+all_int <- bind_rows(troph_list, mut_list, comp_list, com_list, am_list) %>% 
+  group_by(TrophicSpecies, Type, Interaction) %>% 
+  summarise(n = n())
+
+ggplot(all_int, aes(x = Type, y = n, colour = Interaction)) +
+  geom_boxplot() +
+#  geom_jitter() +
+  labs(x = "Species", y = "Number of interactions", fill = "Interaction type") +
+  scale_colour_manual(labels = c("(-/0)", "(+/0)", "(-/-)", "(+/+)", "(+/-)"), 
+                     values = c("green", "yellow", "blue", "red", "purple")) +
+  theme_classic()
+
+
+

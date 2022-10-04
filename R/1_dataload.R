@@ -81,8 +81,9 @@ multi_troph <- edge_troph %>%
 multi_mut <- edge_mut %>% 
   rename(from = Var1, to = Var2, layer = value) %>% 
   mutate(layer = "mutualistic")
-multi_comp <- edge_comp %>% 
-  rename(from = Var1, to = Var2, layer = value) %>% 
+multi_comp <- edgelist_comp_final %>% 
+  dplyr::select(Competitor_1, Competitor_2) %>% 
+  rename(from = Competitor_1, to = Competitor_2) %>% 
   mutate(layer = "competitive")
 multi_com <- commensalistic %>% 
   rename(from = from, to = to) %>% 
