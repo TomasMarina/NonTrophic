@@ -60,13 +60,27 @@ all_int <- bind_rows(troph_list, mut_list, comp_list, com_list, am_list) %>%
   group_by(TrophicSpecies, Type, Interaction) %>% 
   summarise(n = n())
 
-# Colorblind-friendly
-show_col(colorblind_pal()(5))
-cb <- colorblind_pal()(5)
-ggplot(all_int, aes(x = Type, y = n, colour = Interaction)) +
+# RGB code
+# Trophic [255, 0, 255] (+/-)
+# Mutualistic [255,0, 51] (+/+)
+# Commensalistic [255, 204, 102] (+/0)
+# Amensalistic [102, 255, 0] (-/0)
+# Competitive [0, 51, 204] (-/-)
+
+troph_col <- rgb(255,0,255, maxColorValue = 255)
+mut_col <- rgb(255,0,51, maxColorValue = 255)
+com_col <- rgb(255,204,102, maxColorValue = 255)
+am_col <- rgb(102,255,0, maxColorValue = 255)
+comp_col <- rgb(0,51,204, maxColorValue = 255)
+
+fig5 <- all_int %>% 
+  mutate(Interaction = factor(Interaction, levels = c("trophic", "mutualistic", "commensalistic",
+                                   "amensalistic", "competitive"))) %>% 
+  ggplot(aes(x = Type, y = n, colour = Interaction)) +
   geom_boxplot() +
-  scale_colour_manual(labels = c("(-/0)", "(+/0)", "(-/-)", "(+/+)", "(+/-)"), 
-                      values = cb) +
+  scale_colour_manual(labels = c("(+/-)", "(+/+)", "(+/0)", "(-/0)", "(-/-)"), 
+                      values = c(troph_col, mut_col, com_col, am_col, comp_col)) +
   scale_x_discrete(labels = c("Basal", "Intermediate", "Top")) +
   labs(x = "Species", y = "Number of interactions", colour = "Interaction") +
   theme_classic()
+fig5
