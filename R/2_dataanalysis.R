@@ -2,7 +2,7 @@
 ## Date: September 2022
 ## Authors: Vanesa Salinas, Tomás Ignacio Marina, Georgina Cordone, Fernando Momo
 
-# 1. DATA ANALYSIS
+# 2. DATA ANALYSIS
 
 
 # Load pkgs ----

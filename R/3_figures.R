@@ -2,12 +2,12 @@
 ## Date: September 2022
 ## Authors: Vanesa Salinas, Tomás Ignacio Marina, Georgina Cordone, Fernando Momo
 
-# 1. FIGURES
+# 3. FIGURES
 
 
 # Load pkgs ----
 
-packages <- c("dplyr", "tidyr", "ggplot2")
+packages <- c("dplyr", "tidyr", "ggplot2", "scales", "ggthemes")
 ipak <- function(pkg){
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
   if (length(new.pkg))
@@ -24,7 +24,9 @@ load("results/complexity_&_sppattr.rda")
 
 
 # Figure 5 ----
-# Caption: Distribution of non-trophic interactions among basal, intermediate and top species.
+# Caption: Distribution of trophic and non-trophic interactions among basal (without prey), intermediate (with prey and predator) 
+# and top (without predator) species. Interaction: amensalistic (-/0), commensalistic (+/0), competitive (-/-), mutualistic (+/+) 
+# and trophic (+/-).
 
 sp_attr_all
 
@@ -58,13 +60,13 @@ all_int <- bind_rows(troph_list, mut_list, comp_list, com_list, am_list) %>%
   group_by(TrophicSpecies, Type, Interaction) %>% 
   summarise(n = n())
 
+# Colorblind-friendly
+show_col(colorblind_pal()(5))
+cb <- colorblind_pal()(5)
 ggplot(all_int, aes(x = Type, y = n, colour = Interaction)) +
   geom_boxplot() +
-#  geom_jitter() +
-  labs(x = "Species", y = "Number of interactions", fill = "Interaction type") +
   scale_colour_manual(labels = c("(-/0)", "(+/0)", "(-/-)", "(+/+)", "(+/-)"), 
-                     values = c("green", "yellow", "blue", "red", "purple")) +
+                      values = cb) +
+  scale_x_discrete(labels = c("Basal", "Intermediate", "Top")) +
+  labs(x = "Species", y = "Number of interactions", colour = "Interaction") +
   theme_classic()
-
-
-
