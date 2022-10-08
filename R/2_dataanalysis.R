@@ -25,12 +25,12 @@ load("data/igraph_multiplex_data.rda")
 # Network analysis ----
 
 ## Complexity ----
-g_list <- list(g_troph, g_mut, g_comp, g_com, g_am)
-names(g_list) <- c("trophic", "mutualistic", "competitive", "commensalistic", "amensalistic")
+g_list <- list(g_troph, g_mut, g_comp, g_com, g_am, g_multi)
+names(g_list) <- c("trophic", "mutualistic", "competitive", "commensalistic", "amensalistic", "multiplex")
 
 complexity <- lapply(g_list, calc_topological_indices)
 df_complex <- bind_rows(complexity) %>% 
-  mutate(Network = c("Trophic", "Mutualistic", "Competitive", "Commensalistic", "Amensalistic")) %>% 
+  mutate(Network = c("Trophic", "Mutualistic", "Competitive", "Commensalistic", "Amensalistic", "Multiplex")) %>% 
   dplyr::select(Network, Size, Links, LD, Connectance, Components)
 
 
@@ -146,6 +146,62 @@ sp_attr_all <- sp_attr_deg %>%
   replace(is.na(.), 0)
 
 
+# Table 1 ----
+# Complexity and structural properties of the non-trophic networks. 
+# S = number of species, L = number of links, L/S = density, C = connectance.
+# B, I and T = percentage of basal, intermediate and top species respectively.
+
+sp_type
+sp_attr_troph
+sp_attr_mut
+sp_attr_com
+sp_attr_am
+sp_attr_comp
+
+sp_type_troph <- sp_attr_troph %>% 
+  left_join(sp_type) %>% 
+  group_by(Type) %>% 
+  summarise(n = (n()/nrow(sp_attr_troph))*100) %>% 
+  tidyr::pivot_wider(names_from = Type, values_from = n) %>% 
+  mutate(Network = "Trophic", .before = basal)
+sp_type_mut <- sp_attr_mut %>% 
+  left_join(sp_type) %>% 
+  group_by(Type) %>% 
+  summarise(n = (n()/nrow(sp_attr_mut))*100) %>% 
+  tidyr::pivot_wider(names_from = Type, values_from = n) %>% 
+  mutate(Network = "Mutualistic", .before = basal)
+sp_type_com <- sp_attr_com %>% 
+  left_join(sp_type) %>% 
+  group_by(Type) %>% 
+  summarise(n = (n()/nrow(sp_attr_com))*100) %>% 
+  tidyr::pivot_wider(names_from = Type, values_from = n) %>% 
+  mutate(Network = "Commensalistic", .before = basal)
+sp_type_am <- sp_attr_am %>% 
+  left_join(sp_type) %>% 
+  group_by(Type) %>% 
+  summarise(n = (n()/nrow(sp_attr_am))*100) %>% 
+  tidyr::pivot_wider(names_from = Type, values_from = n) %>% 
+  mutate(Network = "Amensalistic", .before = basal)
+sp_type_comp <- sp_attr_comp %>% 
+  left_join(sp_type) %>% 
+  group_by(Type) %>% 
+  summarise(n = (n()/nrow(sp_attr_comp))*100) %>% 
+  tidyr::pivot_wider(names_from = Type, values_from = n) %>% 
+  mutate(Network = "Competitive", .before = basal)
+sp_type_multi <- sp_attr_multi %>% 
+  left_join(sp_type) %>% 
+  group_by(Type) %>% 
+  summarise(n = (n()/nrow(sp_attr_multi))*100) %>% 
+  tidyr::pivot_wider(names_from = Type, values_from = n) %>% 
+  mutate(Network = "Multiplex", .before = basal)
+
+sp_type_perc <- bind_rows(sp_type_troph, sp_type_mut, sp_type_com, sp_type_am, 
+                          sp_type_comp, sp_type_multi)
+
+table_1 <- df_complex %>% 
+  left_join(sp_type_perc)
+
+
 # Save results ----
-save(df_complex, g_troph, g_mut, g_comp, g_com, g_com, sp_attr_all,
+save(df_complex, g_troph, g_mut, g_comp, g_com, g_com, sp_attr_all, table_1,
      file = "results/complexity_&_sppattr.rda")
