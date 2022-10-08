@@ -76,11 +76,18 @@ comp_col <- rgb(0,51,204, maxColorValue = 255)
 fig5 <- all_int %>% 
   mutate(Interaction = factor(Interaction, levels = c("trophic", "mutualistic", "commensalistic",
                                    "amensalistic", "competitive"))) %>% 
-  ggplot(aes(x = Type, y = n, colour = Interaction)) +
-  geom_boxplot() +
+  ggplot(aes(x = Type, y = n, colour = Interaction, fill = Interaction)) +
+  geom_boxplot(alpha = 0.2) +
   scale_colour_manual(labels = c("(+/-)", "(+/+)", "(+/0)", "(-/0)", "(-/-)"), 
+                      values = c(troph_col, mut_col, com_col, am_col, comp_col)) +
+  scale_fill_manual(labels = c("(+/-)", "(+/+)", "(+/0)", "(-/0)", "(-/-)"), 
                       values = c(troph_col, mut_col, com_col, am_col, comp_col)) +
   scale_x_discrete(labels = c("Basal", "Intermediate", "Top")) +
   labs(x = "Species", y = "Number of interactions", colour = "Interaction") +
   theme_classic()
 fig5
+
+
+# Save results ----
+save(all_int, fig5,
+     file = "results/figure5.rda")
