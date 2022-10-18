@@ -87,6 +87,9 @@ fig5 <- all_int %>%
   theme_classic()
 fig5
 
+png(filename = "results/figure5.png", width = 5, height = 5, res = 600, units = "in")
+fig5
+dev.off()
 
 # Save results ----
 save(all_int, fig5,
