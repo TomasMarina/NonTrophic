@@ -73,6 +73,24 @@ com_col <- rgb(255,204,102, maxColorValue = 255)
 am_col <- rgb(102,255,0, maxColorValue = 255)
 comp_col <- rgb(0,51,204, maxColorValue = 255)
 
+# Total number of trophic and non-trophic interactions per species type
+data_tbl <- all_int %>% 
+  mutate(Interaction = case_when(Interaction %in% c("amensalistic", "commensalistic","competitive","mutualistic") ~ "Non-trophic",
+                                 TRUE ~ Interaction)) %>% 
+  group_by(Type, Interaction) %>% 
+  mutate(Count = sum(n)) %>% 
+  dplyr::distinct(Type, Interaction, Count)
+data_tbl
+
+basal_nontrop <- data_tbl$Count[data_tbl$Type == "basal" & data_tbl$Interaction == "Non-trophic"]
+int_nontrop <- data_tbl$Count[data_tbl$Type == "intermediate" & data_tbl$Interaction == "Non-trophic"]
+top_nontrop <- data_tbl$Count[data_tbl$Type == "top" & data_tbl$Interaction == "Non-trophic"]
+
+basal_trop <- data_tbl$Count[data_tbl$Type == "basal" & data_tbl$Interaction == "trophic"]
+int_trop <- data_tbl$Count[data_tbl$Type == "intermediate" & data_tbl$Interaction == "trophic"]
+top_trop <- data_tbl$Count[data_tbl$Type == "top" & data_tbl$Interaction == "trophic"]
+
+# Plot
 fig5 <- all_int %>% 
   mutate(Interaction = factor(Interaction, levels = c("trophic", "mutualistic", "commensalistic",
                                    "amensalistic", "competitive"))) %>% 
@@ -84,6 +102,9 @@ fig5 <- all_int %>%
                       values = c(troph_col, mut_col, com_col, am_col, comp_col)) +
   scale_x_discrete(labels = c("Basal", "Intermediate", "Top")) +
   labs(x = "Species", y = "Number of interactions", colour = "Interaction") +
+  annotate("text", size = 2.5, x = c(1,2,3), y=48, label = c('Trophic = 132 \n Non-trophic = 289',
+                                                 'Trophic = 354 \n Non-trophic = 878',
+                                                 'Trophic = 128 \n Non-trophic = 247')) +
   theme_classic()
 fig5
 
