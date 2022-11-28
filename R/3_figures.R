@@ -101,7 +101,7 @@ fig5 <- all_int %>%
   scale_fill_manual(labels = c("(+/-)", "(+/+)", "(+/0)", "(-/0)", "(-/-)"), 
                       values = c(troph_col, mut_col, com_col, am_col, comp_col)) +
   scale_x_discrete(labels = c("Basal", "Intermediate", "Top")) +
-  labs(x = "Species", y = "Number of interactions", colour = "Interaction") +
+  labs(x = "Species", y = "Number of interactions per species", colour = "Interaction") +
   annotate("text", size = 2.5, x = c(1,2,3), y=48, label = c('Trophic = 132 \n Non-trophic = 289',
                                                  'Trophic = 354 \n Non-trophic = 878',
                                                  'Trophic = 128 \n Non-trophic = 247')) +
