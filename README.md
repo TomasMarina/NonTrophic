@@ -1,7 +1,7 @@
 # Ecological networks of an Antarctic ecosystem: a full description of non-trophic interactions
 
-<a href="https://zenodo.org/doi/10.5281/zenodo.17050582"><img src="https://zenodo.org/badge/" alt="DOI"></a>
-# <a href="https://zenodo.org/doi/10.5281/zenodo.10569497"><img src="https://zenodo.org/badge/600043086.svg" alt="DOI"></a>
+<a href="https://doi.org/10.5281/zenodo.17050582"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17050582.svg" alt="DOI"></a>
+
 Research published in Marine Biology. https://doi.org/10.1007/s00227-022-04155-3
 
 ## Authors
